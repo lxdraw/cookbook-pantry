@@ -23,6 +23,15 @@ public class RecipeService {
 		}
 	}
 	
+	public List<Recipe> getRecipes() {
+		List<Recipe> recipes = (List<Recipe>) recipeRepo.findAll();
+		if(recipes != null && recipes.size() > 0) {
+			return recipes;
+		} else {
+			return null;
+		}
+	}
+	
 	public Recipe addRecipe(Recipe recipe) {
 		recipe.setCreatedDate(LocalDateTime.now());
 		recipeRepo.save(recipe);

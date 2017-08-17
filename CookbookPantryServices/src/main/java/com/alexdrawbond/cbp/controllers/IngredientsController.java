@@ -6,8 +6,6 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,29 +25,29 @@ public class IngredientsController {
 	IngredientsService service;
 
 	@RequestMapping(value = "/recipes/{recipeId}/ingredients", method = RequestMethod.GET)
-	public ResponseEntity<List<Ingredient>> getIngredients(@PathVariable(required = true) long recipeId, HttpServletRequest request) {
+	public ResponseEntity<List<Ingredient>> getIngredients(@PathVariable(required = true) long recipeId) {
 		List<Ingredient> ingredients = service.getIngredients(recipeId);
 		
-		buildLinks(ingredients, recipeId, request);
+		buildLinks(ingredients, recipeId);
 		
 		return new ResponseEntity<List<Ingredient>>(ingredients, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/recipes/{recipeId}/ingredients", method = RequestMethod.POST)
-	public ResponseEntity<Ingredient> addIngredients(@RequestBody Ingredient ingredient, @PathVariable long recipeId, HttpServletRequest request) {
+	public ResponseEntity<Ingredient> addIngredients(@RequestBody Ingredient ingredient, @PathVariable long recipeId) {
 		ingredient = service.addIngredient(ingredient, recipeId);
 		
-		buildLinks(Arrays.asList(ingredient), recipeId, request);
+		buildLinks(Arrays.asList(ingredient), recipeId);
 		
 		return new ResponseEntity<Ingredient>(ingredient, HttpStatus.CREATED);
 	}
 
 	@RequestMapping(value = "/recipes/{recipeId}/ingredients/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Ingredient> updateIngredient(@PathVariable(required = true) long recipeId,
-			@PathVariable(required = true) long id, @RequestBody Ingredient ingredient, HttpServletRequest request) {
+			@PathVariable(required = true) long id, @RequestBody Ingredient ingredient) {
 		ingredient = service.upateIngredient(recipeId, id, ingredient);
 		
-		buildLinks(Arrays.asList(ingredient), recipeId, request);
+		buildLinks(Arrays.asList(ingredient), recipeId);
 		
 		return new ResponseEntity<Ingredient> (ingredient, HttpStatus.OK);
 	}
@@ -60,10 +58,10 @@ public class IngredientsController {
 		return new ResponseEntity<HttpStatus> (HttpStatus.NO_CONTENT);
 	}
 	
-	private void buildLinks(List<Ingredient> ingredients, Long recipeId, HttpServletRequest request) {
+	private void buildLinks(List<Ingredient> ingredients, Long recipeId) {
 		for(Ingredient ingredient : ingredients) {
-			ingredient.add(linkTo(methodOn(this.getClass()).getIngredients(recipeId, request)).withSelfRel());
-			ingredient.add(linkTo(methodOn(RecipeController.class).getRecipe(recipeId, request)).withRel("recipe"));
+			ingredient.add(linkTo(methodOn(this.getClass()).getIngredients(recipeId)).withSelfRel());
+			ingredient.add(linkTo(methodOn(RecipeController.class).getRecipe(recipeId)).withRel("recipe"));
 		}
 	}
 }
