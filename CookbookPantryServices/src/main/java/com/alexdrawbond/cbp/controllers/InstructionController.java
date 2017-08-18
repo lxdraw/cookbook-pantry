@@ -27,10 +27,16 @@ public class InstructionController {
 	@RequestMapping(value = "/recipes/{recipeId}/instructions/", method = RequestMethod.GET)
 	public ResponseEntity<List<Instruction>> getInstructionsForRecipe(@PathVariable(required = true) Long recipeId) {
 		List<Instruction> instructions = service.getInstructions(recipeId);
+		HttpStatus status;
+		
+		if(instructions != null) {
+			buildLinks(instructions, recipeId);
+			status = HttpStatus.OK;
+		} else {
+			status = HttpStatus.NOT_FOUND;
+		}
 
-		buildLinks(instructions, recipeId);
-
-		return new ResponseEntity<List<Instruction>>(instructions, HttpStatus.OK);
+		return new ResponseEntity<List<Instruction>>(instructions, status);
 	}
 
 	@RequestMapping(value = "/recipes/{recipeId}/instructions", method = RequestMethod.POST)

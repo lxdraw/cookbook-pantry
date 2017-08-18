@@ -23,25 +23,38 @@ public class RecipeController {
 	@Autowired
 	RecipeService service;
 	
-	@RequestMapping(value = "/recipes/{id}", method = RequestMethod.GET)
-	public ResponseEntity<Recipe> getRecipe(@PathVariable Long id) {
-		Recipe recipe = service.getRecipe(id);
-
-		buildLinks(recipe, id);
-		
-		return new ResponseEntity<Recipe> (recipe, HttpStatus.OK);
-	}
-	
+	//TODO: Add search functionality instead of returning all recipes
 	@RequestMapping(value = "/recipes", method = RequestMethod.GET)
-	public ResponseEntity<List<Recipe>> getRecipe() {
+	public ResponseEntity<List<Recipe>> getRecipes() {
 		List<Recipe> recipes = service.getRecipes();
-
-		for(Recipe recipe : recipes) {
-			buildLinks(recipe, recipe.getDbId());
+		HttpStatus status;
+		
+		if(recipes != null) {
+			for(Recipe recipe : recipes) {
+				buildLinks(recipe, recipe.getDbId());
+			}
+			status = HttpStatus.OK;
+		} else {
+			status = HttpStatus.NOT_FOUND;
 		}
 
 		
-		return new ResponseEntity<List<Recipe>> (recipes, HttpStatus.OK);
+		return new ResponseEntity<List<Recipe>> (recipes, status);
+	}
+	
+	@RequestMapping(value = "/recipes/{id}", method = RequestMethod.GET)
+	public ResponseEntity<Recipe> getRecipe(@PathVariable Long id) {
+		Recipe recipe = service.getRecipe(id);
+		HttpStatus status;
+		
+		if(recipe != null) {
+			buildLinks(recipe, id);
+			status = HttpStatus.OK;
+		} else {
+			status = HttpStatus.NOT_FOUND;
+		}
+		
+		return new ResponseEntity<Recipe> (recipe, status);
 	}
 	
 	@RequestMapping(value = "/recipes", method = RequestMethod.POST) 

@@ -27,10 +27,16 @@ public class IngredientsController {
 	@RequestMapping(value = "/recipes/{recipeId}/ingredients", method = RequestMethod.GET)
 	public ResponseEntity<List<Ingredient>> getIngredients(@PathVariable(required = true) long recipeId) {
 		List<Ingredient> ingredients = service.getIngredients(recipeId);
+		HttpStatus status;
 		
-		buildLinks(ingredients, recipeId);
+		if(ingredients != null) {
+			buildLinks(ingredients, recipeId);
+			status = HttpStatus.OK;
+		} else {
+			status = HttpStatus.NOT_FOUND;
+		}
 		
-		return new ResponseEntity<List<Ingredient>>(ingredients, HttpStatus.OK);
+		return new ResponseEntity<List<Ingredient>>(ingredients, status);
 	}
 
 	@RequestMapping(value = "/recipes/{recipeId}/ingredients", method = RequestMethod.POST)
