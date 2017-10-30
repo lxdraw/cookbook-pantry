@@ -23,7 +23,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 
 @Entity
-@Table(name="RECIPES")
 public class Recipe extends ResourceSupport {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
