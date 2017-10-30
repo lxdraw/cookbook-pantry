@@ -4,15 +4,21 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+		maven {
+      			url "https://plugins.gradle.org/m2/"
+    		}
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath('mysql:mysql-connector-java:6.0.6')
+		classpath "gradle.plugin.com.boxfuse.client:flyway-release:4.2.0"
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: "org.flywaydb.flyway"
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
@@ -21,6 +27,11 @@ repositories {
 	mavenCentral()
 }
 
+flyway {
+    url = 'jdbc:mysql://localhost:3306/cookbook_pantry?serverTimezone=UTC'
+    user = 'root'
+    password = 'SHAZAM2013'
+}
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
@@ -29,6 +40,7 @@ dependencies {
     compile("io.springfox:springfox-swagger2:2.7.0")
     compile("io.springfox:springfox-swagger-ui:2.7.0")
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.0.pr4'
-    compile("com.h2database:h2")
+    compile 'mysql:mysql-connector-java:6.0.6'
+    // compile("com.h2database:h2")
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
